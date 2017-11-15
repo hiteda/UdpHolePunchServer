@@ -8,7 +8,7 @@
 #include <map>
 #include <string>
 
-namespace GoopsPuncher
+namespace UdpPuncher
 {
 struct Client;
 typedef std::shared_ptr<Client> SPClient;
