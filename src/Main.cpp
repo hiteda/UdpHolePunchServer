@@ -8,7 +8,7 @@
 
 int main(int argc, char* argv[])
 {
-  GoopsPuncher::Server theServer;
+  UdpPuncher::Server theServer;
   
   theServer.Run();
   
