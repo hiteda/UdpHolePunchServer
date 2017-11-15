@@ -8,7 +8,7 @@
 #include <string>
 #include <ctime>
 
-namespace GoopsPuncher
+namespace UdpPuncher
 {
   struct IpEndpoint
   {
