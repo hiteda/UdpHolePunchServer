@@ -6,7 +6,7 @@
 #include "Server.h"
 #include <iostream>
 
-using namespace GoopsPuncher;
+using namespace UdpPuncher;
 using std::string;
 
 Server::Server()
