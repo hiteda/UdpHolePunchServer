@@ -8,7 +8,7 @@
 #include <memory>
 #include "ClientMap.h"
 
-namespace GoopsPuncher
+namespace UdpPuncher
 {
 class ClientMap;
 
