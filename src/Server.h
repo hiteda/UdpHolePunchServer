@@ -7,10 +7,15 @@
 #pragma once
 #include <memory>
 #include "ClientMap.h"
+#include "ServerSocket.h"
 
 namespace UdpPuncher
 {
-class ClientMap;
+//class ClientMap;
+//class ServerSocket;
+
+typedef std::unique_ptr<ClientMap>    UPClientMap;
+typedef std::unique_ptr<ServerSocket> UPServerSocket;
 
 class Server
 {
@@ -22,6 +27,7 @@ public:
 private:
   const static int m_PortNum = 55176;
   
-  std::unique_ptr<ClientMap> m_pClientMap;
+  UPClientMap     m_pClientMap;
+  UPServerSocket  m_pServerSocket;
 };
 }

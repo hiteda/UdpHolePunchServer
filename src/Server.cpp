@@ -8,13 +8,17 @@
 
 using namespace UdpPuncher;
 using std::string;
+using std::cout;
+using std::endl;
 
 Server::Server()
-: m_pClientMap(std::unique_ptr<ClientMap>(new ClientMap()))
+: m_pClientMap(UPClientMap(new ClientMap()))
 {
 }
 
 void Server::Run()
 {
-  std::cout << "Hey there!" << std::endl;
+  cout << "Starting server on port " << m_PortNum << endl;
+  m_pServerSocket = UPServerSocket(new ServerSocket(m_PortNum));
+  cout << m_pServerSocket->GetErrorString() << endl;
 }
