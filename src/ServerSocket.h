@@ -27,11 +27,17 @@ public:
   
   std::string GetErrorString() const;
   
+  bool Receive(std::string& receivedString);
+  
 private:
+  const static int    s_BUFFER_LENGTH = 512;
+
   struct sockaddr_in  m_AddrInMe;
   struct sockaddr_in  m_AddrInOther;
+  socklen_t           m_OtherLength;
   int                 m_SocketFileDesc;  
   EErrType            m_ErrorCode;
+  char                m_Buffer[s_BUFFER_LENGTH];
   
   EErrType InitSocket(const int portNum);
 };

@@ -6,6 +6,7 @@
 #include "ServerSocket.h"
 #include <unistd.h>
 #include <string.h>
+#include <iostream>
 
 using namespace UdpPuncher;
 using std::string;
@@ -13,7 +14,8 @@ using std::string;
 ServerSocket::ServerSocket(const int portNum)
 : m_ErrorCode(EErrType::None)
 {
-  m_ErrorCode = InitSocket(portNum);
+  m_ErrorCode   = InitSocket(portNum);
+  m_OtherLength = sizeof(m_AddrInOther);
 }
 
 ServerSocket::~ServerSocket()
@@ -22,6 +24,11 @@ ServerSocket::~ServerSocket()
     close(m_SocketFileDesc);
 }
 
+/** GetErrorString
+Returns a string corresponding to the current value
+of m_ErrorCode
+@return string of error message
+*/
 string ServerSocket::GetErrorString() const
 {
   string errString("");
@@ -39,15 +46,33 @@ string ServerSocket::GetErrorString() const
     case EErrType::RecvFrom:
       errString = "Failed to receive message";
       break;
-    case EErrType::None:
-      errString = "Socket open success!";
-      break;
+    case EErrType::None: // fall through
     default:
       break;
   }
   return errString;
 }
 
+bool ServerSocket::Receive(string& receivedString)
+{
+  bzero(m_Buffer, s_BUFFER_LENGTH);
+  
+  if (recvfrom(m_SocketFileDesc, m_Buffer, s_BUFFER_LENGTH, 0, (struct sockaddr*)(&m_AddrInOther), &m_OtherLength) == -1)
+  {
+    m_ErrorCode = EErrType::RecvFrom;
+    return false;
+  }
+  receivedString.assign(m_Buffer, strlen(m_Buffer));
+  return true;
+}
+
+/** InitSocket
+Initializes the server socket on the number set
+by portNum.
+
+@param  portNum : [in] port number to use
+@return EErrType type of error that occurred
+*/
 EErrType ServerSocket::InitSocket(const int portNum)
 {
   m_SocketFileDesc = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);

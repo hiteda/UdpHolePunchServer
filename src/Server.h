@@ -22,7 +22,7 @@ class Server
 public:
   Server();
   
-  void Run();
+  bool Run();
   
 private:
   const static int m_PortNum = 55176;

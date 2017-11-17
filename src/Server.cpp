@@ -16,9 +16,28 @@ Server::Server()
 {
 }
 
-void Server::Run()
+bool Server::Run()
 {
-  cout << "Starting server on port " << m_PortNum << endl;
+  cout << "Starting server on port " << m_PortNum << "..." << endl;
+  
   m_pServerSocket = UPServerSocket(new ServerSocket(m_PortNum));
-  cout << m_pServerSocket->GetErrorString() << endl;
+  string errString = m_pServerSocket->GetErrorString();
+  if (!errString.empty())
+  {
+    cout << errString << endl;
+    return false;
+  }
+  
+  cout << "Listening on port " << m_PortNum << "..." << endl;
+  
+  bool receiveSuccess = true;
+  while (1)
+  {
+    string receivedString("");
+    receiveSuccess = m_pServerSocket->Receive(receivedString);
+    if (receiveSuccess)
+      cout << receivedString << endl;;
+  }
+  
+  return true;
 }
