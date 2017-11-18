@@ -11,8 +11,6 @@
 
 namespace UdpPuncher
 {
-//class ClientMap;
-//class ServerSocket;
 
 typedef std::unique_ptr<ClientMap>    UPClientMap;
 typedef std::unique_ptr<ServerSocket> UPServerSocket;
@@ -20,13 +18,23 @@ typedef std::unique_ptr<ServerSocket> UPServerSocket;
 class Server
 {
 public:
-  Server();
-  
+  static Server& GetInstance()
+  {
+    static Server instance;
+    return instance;
+  }
+
+  bool SetPortNumber(const int portNumber);
   bool Run();
+  void CloseSocket();
   
 private:
-  const static int m_PortNum = 55176;
-  
+  Server();
+  Server(Server const&);
+  void operator=(Server const&);
+
+  int             m_PortNum;
+  static Server*  m_pInstance;
   UPClientMap     m_pClientMap;
   UPServerSocket  m_pServerSocket;
 };

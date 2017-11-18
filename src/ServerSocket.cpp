@@ -20,8 +20,7 @@ ServerSocket::ServerSocket(const int portNum)
 
 ServerSocket::~ServerSocket()
 {
-  if (m_SocketFileDesc > -1)
-    close(m_SocketFileDesc);
+  CloseSocket();
 }
 
 /** GetErrorString
@@ -51,6 +50,12 @@ string ServerSocket::GetErrorString() const
       break;
   }
   return errString;
+}
+
+void ServerSocket::CloseSocket()
+{
+  if (m_SocketFileDesc > -1)
+    close(m_SocketFileDesc);
 }
 
 bool ServerSocket::Receive(string& receivedString)

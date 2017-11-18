@@ -26,7 +26,8 @@ public:
   ~ServerSocket();
   
   std::string GetErrorString() const;
-  
+  void        CloseSocket();
+
   bool Receive(std::string& receivedString);
   
 private:

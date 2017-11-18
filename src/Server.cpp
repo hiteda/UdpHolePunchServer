@@ -16,6 +16,26 @@ Server::Server()
 {
 }
 
+/** SetPortNumber
+Validates the given port number and sets the
+server's port number.
+
+@param portNumber : [in] port number to set
+@return bool  true if success, else false
+*/
+bool Server::SetPortNumber(const int portNumber)
+{
+  if (portNumber < 1024 || portNumber > 65535)
+    return false;
+  m_PortNum = portNumber;
+  return true;
+}
+
+/** Run
+Starts and runs the server
+
+@return bool  true if success, else false
+*/
 bool Server::Run()
 {
   cout << "Starting server on port " << m_PortNum << "..." << endl;
@@ -40,4 +60,13 @@ bool Server::Run()
   }
   
   return true;
+}
+
+/** CloseSocket
+If the socket is open, close it
+*/
+void Server::CloseSocket()
+{
+  if (m_pServerSocket)
+    m_pServerSocket->CloseSocket();
 }

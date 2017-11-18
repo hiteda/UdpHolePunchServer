@@ -1,7 +1,15 @@
+import argparse
 import socket
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--host", help="Host IP address")
+parser.add_argument("port_number", help="Port number to use", type=int)
+args = parser.parse_args()
+
 UDP_IP = "192.168.1.164"
-UDP_PORT = 55176
+if args.host is not None:
+  UDP_IP = args.host #"192.168.1.164"
+UDP_PORT = args.port_number
 message = "Hey there!"
 
 print "Sending message!"
