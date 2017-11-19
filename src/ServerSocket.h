@@ -10,6 +10,8 @@
 
 namespace UdpPuncher
 {
+struct IpEndpoint;  
+
 enum class EErrType
 {
   None,
@@ -28,7 +30,8 @@ public:
   std::string GetErrorString() const;
   void        CloseSocket();
 
-  bool Receive(std::string& receivedString);
+  bool        Receive(std::string& receivedString);
+  IpEndpoint  GetOtherEndpoint() const;
   
 private:
   const static int    s_BUFFER_LENGTH = 512;

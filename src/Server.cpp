@@ -4,12 +4,18 @@
 @created:     11/14/2017
 *******************************************************************/
 #include "Server.h"
+#include "Client.h"
+#include "IpEndpoint.h"
 #include <iostream>
+#include <cstring>
 
 using namespace UdpPuncher;
 using std::string;
 using std::cout;
 using std::endl;
+using std::shared_ptr;
+
+static const char* s_DELIMITER = ":&:";
 
 Server::Server()
 : m_pClientMap(UPClientMap(new ClientMap()))
@@ -50,13 +56,20 @@ bool Server::Run()
   
   cout << "Listening on port " << m_PortNum << "..." << endl;
   
-  bool receiveSuccess = true;
   while (1)
   {
     string receivedString("");
-    receiveSuccess = m_pServerSocket->Receive(receivedString);
-    if (receiveSuccess)
-      cout << receivedString << endl;;
+    if (m_pServerSocket->Receive(receivedString))
+    {
+      shared_ptr<Client> pClient = ParseMessage(receivedString);
+      if (nullptr == pClient)
+        cout << "No client!" << endl;
+      else
+        cout << pClient->m_Username << ", " 
+        << pClient->m_DeviceId << ", " << pClient->m_Data 
+        << ", " << pClient->m_EndPoint.m_Address << ":" 
+        << pClient->m_EndPoint.m_Port << endl;
+    }
   }
   
   return true;
@@ -69,4 +82,55 @@ void Server::CloseSocket()
 {
   if (m_pServerSocket)
     m_pServerSocket->CloseSocket();
+}
+
+/** ParseMessage
+Parses the given string and moves its data
+to a new client pointer. If data is not valid,
+returns a null pointer.
+
+@param msg  : [in] string to parse
+@return Shared pointer to a new Client object
+*/
+shared_ptr<Client> Server::ParseMessage(const string& msg) const
+{
+  shared_ptr<Client> pClient = nullptr;
+  size_t delimPos = 0;
+  string clientId = Tokenize(msg, s_DELIMITER, delimPos);
+  if (!clientId.empty())
+  {
+    string clientDeviceId = Tokenize(msg, s_DELIMITER, delimPos);
+    if (!clientDeviceId.empty())
+    {
+      string otherData = Tokenize(msg, s_DELIMITER, delimPos);
+      if (!otherData.empty())
+      {
+        IpEndpoint endPoint = m_pServerSocket->GetOtherEndpoint();
+        pClient = shared_ptr<Client>(new Client(clientId, clientDeviceId, otherData, endPoint));
+      }
+    }
+  }
+  
+  return pClient;
+}
+
+/** Tokenize
+Tokenizes the given string using the position
+and delimiter.
+
+@param msg    : [in] stirng to tokenize
+@param delim  : [in] delimiter
+@param pos    : [in/out] position to begin from
+@return The first substring before the given delimeter and after pos
+*/
+string Server::Tokenize(const std::string& msg, const char* delim, size_t& pos) const
+{
+  size_t newPos = msg.find(delim, pos);
+  string token("");
+  if (newPos != string::npos)
+    token = msg.substr(pos, newPos - pos);
+  else
+    token = msg.substr(pos);
+  pos = newPos + strlen(delim);
+  return token;
 }

@@ -4,9 +4,11 @@
 @created:     11/15/2017
 *******************************************************************/
 #include "ServerSocket.h"
+#include "IpEndpoint.h"
 #include <unistd.h>
 #include <string.h>
 #include <iostream>
+#include <arpa/inet.h>
 
 using namespace UdpPuncher;
 using std::string;
@@ -69,6 +71,13 @@ bool ServerSocket::Receive(string& receivedString)
   }
   receivedString.assign(m_Buffer, strlen(m_Buffer));
   return true;
+}
+
+IpEndpoint ServerSocket::GetOtherEndpoint() const
+{
+  string ipAddress(inet_ntoa(m_AddrInOther.sin_addr));
+  IpEndpoint otherEndpoint(ipAddress, m_AddrInOther.sin_port);
+  return otherEndpoint;
 }
 
 /** InitSocket

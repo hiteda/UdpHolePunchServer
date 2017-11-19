@@ -10,7 +10,7 @@ UDP_IP = "192.168.1.164"
 if args.host is not None:
   UDP_IP = args.host #"192.168.1.164"
 UDP_PORT = args.port_number
-message = "Hey there!"
+message = "me:&:thing:&:moreStuff"
 
 print "Sending message!"
 

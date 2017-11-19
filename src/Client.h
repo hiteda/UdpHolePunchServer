@@ -5,28 +5,24 @@
 @description: Struct for holding client data
 *******************************************************************/
 #pragma once
+#include "IpEndpoint.h"
 #include <string>
 #include <ctime>
 
 namespace UdpPuncher
 {
-  struct IpEndpoint
-  {
-    std::string m_Address;
-    int         m_Port;
-    
-    IpEndpoint(const std::string& address, const int port)
-    : m_Address(address)
-    , m_Port(port)
-    {
-    }
-  };
-  
   struct Client
   {
-    //Client(const std::string& data,
-    //        const std::string& extAddress,
-    //        const std::string& extPort);
+    Client(const std::string& username,
+            const std::string& devicedId,
+            const std::string& data,
+            const IpEndpoint& endPoint)
+    : m_Username(username)
+    , m_DeviceId(devicedId)
+    , m_Data(data)
+    , m_EndPoint(endPoint)
+    , m_CreatedTime(time(nullptr))
+    {}
     
     std::string m_Username;
     std::string m_DeviceId;
