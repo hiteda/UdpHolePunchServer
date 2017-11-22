@@ -7,6 +7,7 @@
 #pragma once
 #include <map>
 #include <string>
+#include <memory>
 
 namespace UdpPuncher
 {
@@ -16,9 +17,11 @@ typedef std::shared_ptr<Client> SPClient;
 class ClientMap
 {
 public:
-  ClientMap()
-  {
-  }
+  ClientMap(){}
+  ~ClientMap(){}
+  
+  SPClient  GetMatch(SPClient pNewClient);
+  void      PrintClients() const;
   
 private:
   std::map<std::string, SPClient> m_Clients;

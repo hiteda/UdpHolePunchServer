@@ -61,14 +61,19 @@ bool Server::Run()
     string receivedString("");
     if (m_pServerSocket->Receive(receivedString))
     {
-      shared_ptr<Client> pClient = ParseMessage(receivedString);
-      if (nullptr == pClient)
-        cout << "No client!" << endl;
+      SPClient pClient = ParseMessage(receivedString);
+      if (pClient)
+      {
+        SPClient pClientMatch = m_pClientMap->GetMatch(pClient);
+        if (pClientMatch)
+        {
+          // TODO: send their data to each other
+          cout << "Match!" << endl;
+        }
+        m_pClientMap->PrintClients();
+      }
       else
-        cout << pClient->m_Username << ", " 
-        << pClient->m_DeviceId << ", " << pClient->m_Data 
-        << ", " << pClient->m_EndPoint.m_Address << ":" 
-        << pClient->m_EndPoint.m_Port << endl;
+        cout << "No client!" << endl;
     }
   }
   
@@ -118,7 +123,7 @@ shared_ptr<Client> Server::ParseMessage(const string& msg) const
 Tokenizes the given string using the position
 and delimiter.
 
-@param msg    : [in] stirng to tokenize
+@param msg    : [in] string to tokenize
 @param delim  : [in] delimiter
 @param pos    : [in/out] position to begin from
 @return The first substring before the given delimeter and after pos

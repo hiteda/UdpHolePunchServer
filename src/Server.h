@@ -18,21 +18,13 @@ typedef std::unique_ptr<ServerSocket> UPServerSocket;
 class Server
 {
 public:
-  static Server& GetInstance()
-  {
-    static Server instance;
-    return instance;
-  }
+  Server();
 
   bool SetPortNumber(const int portNumber);
   bool Run();
   void CloseSocket();
   
 private:
-  Server();
-  Server(Server const&);
-  void operator=(Server const&);
-  
   std::shared_ptr<Client> ParseMessage(const std::string& msg) const;
   std::string             Tokenize(const std::string& msg, const char* delim, size_t& pos) const;
 
