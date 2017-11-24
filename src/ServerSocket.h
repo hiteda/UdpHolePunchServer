@@ -32,6 +32,7 @@ public:
 
   bool        Receive(std::string& receivedString);
   IpEndpoint  GetOtherEndpoint() const;
+  void        SendClientMessage(const IpEndpoint& clientEndpoint, const std::string& msg);
   
 private:
   const static int    s_BUFFER_LENGTH = 512;

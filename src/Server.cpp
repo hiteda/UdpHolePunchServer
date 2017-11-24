@@ -69,6 +69,7 @@ bool Server::Run()
         {
           // TODO: send their data to each other
           cout << "Match!" << endl;
+          SendClientMessages(pClient, pClientMatch);
         }
         m_pClientMap->PrintClients();
       }
@@ -108,10 +109,10 @@ shared_ptr<Client> Server::ParseMessage(const string& msg) const
     if (!clientDeviceId.empty())
     {
       string otherData = Tokenize(msg, s_DELIMITER, delimPos);
-      if (!otherData.empty())
+      if (!otherData.empty()) // make sure there is some other data
       {
         IpEndpoint endPoint = m_pServerSocket->GetOtherEndpoint();
-        pClient = shared_ptr<Client>(new Client(clientId, clientDeviceId, otherData, endPoint));
+        pClient = shared_ptr<Client>(new Client(clientId, clientDeviceId, msg, endPoint));
       }
     }
   }
@@ -138,4 +139,10 @@ string Server::Tokenize(const std::string& msg, const char* delim, size_t& pos) 
     token = msg.substr(pos);
   pos = newPos + strlen(delim);
   return token;
+}
+
+void Server::SendClientMessages(const SPClient pClient1, const SPClient pClient2)
+{
+  m_pServerSocket->SendClientMessage(pClient1->m_EndPoint, pClient2->m_Data);
+  m_pServerSocket->SendClientMessage(pClient2->m_EndPoint, pClient1->m_Data);
 }

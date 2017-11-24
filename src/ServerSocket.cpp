@@ -9,6 +9,7 @@
 #include <string.h>
 #include <iostream>
 #include <arpa/inet.h>
+#include <netdb.h>
 
 using namespace UdpPuncher;
 using std::string;
@@ -76,8 +77,22 @@ bool ServerSocket::Receive(string& receivedString)
 IpEndpoint ServerSocket::GetOtherEndpoint() const
 {
   string ipAddress(inet_ntoa(m_AddrInOther.sin_addr));
-  IpEndpoint otherEndpoint(ipAddress, m_AddrInOther.sin_port);
+  IpEndpoint otherEndpoint(ipAddress, ntohs(m_AddrInOther.sin_port));
   return otherEndpoint;
+}
+
+void ServerSocket::SendClientMessage(const IpEndpoint& clientEndpoint, const string& msg)
+{
+  struct sockaddr_in clientAddress;
+  memset((char*) &clientAddress, 0, sizeof(clientAddress));
+  
+  clientAddress.sin_family  = AF_INET;
+  clientAddress.sin_port    = htons(clientEndpoint.m_Port);
+  std::cout << clientEndpoint.m_Address << ":" << clientEndpoint.m_Port << std::endl;
+  struct hostent* ipAddr = gethostbyname(clientEndpoint.m_Address.c_str());
+  bcopy((char*)ipAddr->h_addr, (char*)&clientAddress.sin_addr.s_addr, ipAddr->h_length);
+  if (sendto(m_SocketFileDesc, msg.c_str(), msg.length()+1, 0, (struct sockaddr*)(&clientAddress), sizeof(clientAddress)) < 0)
+    std::cout << "Oh no! Send failure!" << std::endl;
 }
 
 /** InitSocket

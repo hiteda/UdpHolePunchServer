@@ -27,6 +27,7 @@ public:
 private:
   std::shared_ptr<Client> ParseMessage(const std::string& msg) const;
   std::string             Tokenize(const std::string& msg, const char* delim, size_t& pos) const;
+  void                    SendClientMessages(const SPClient pClient1, const SPClient pClient2);
 
   int             m_PortNum;
   static Server*  m_pInstance;
