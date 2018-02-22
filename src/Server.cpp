@@ -98,9 +98,9 @@ returns a null pointer.
 @param msg  : [in] string to parse
 @return Shared pointer to a new Client object
 */
-shared_ptr<Client> Server::ParseMessage(const string& msg) const
+SPClient Server::ParseMessage(const string& msg) const
 {
-  shared_ptr<Client> pClient = nullptr;
+  SPClient pClient = nullptr;
   size_t delimPos = 0;
   string clientId = Tokenize(msg, s_DELIMITER, delimPos);
   if (!clientId.empty())
@@ -108,11 +108,15 @@ shared_ptr<Client> Server::ParseMessage(const string& msg) const
     string clientDeviceId = Tokenize(msg, s_DELIMITER, delimPos);
     if (!clientDeviceId.empty())
     {
-      string otherData = Tokenize(msg, s_DELIMITER, delimPos);
-      if (!otherData.empty()) // make sure there is some other data
+      string connectDeviceId = Tokenize(msg, s_DELIMITER, delimPos);
+      if (!connectDeviceId.empty())
       {
-        IpEndpoint endPoint = m_pServerSocket->GetOtherEndpoint();
-        pClient = shared_ptr<Client>(new Client(clientId, clientDeviceId, msg, endPoint));
+        string otherData = Tokenize(msg, s_DELIMITER, delimPos);
+        if (!otherData.empty()) // make sure there is some other data
+        {
+          IpEndpoint endPoint = m_pServerSocket->GetOtherEndpoint();
+          pClient = SPClient(new Client(clientId, clientDeviceId, connectDeviceId, msg, endPoint));
+        }
       }
     }
   }

@@ -24,7 +24,9 @@ SPClient ClientMap::GetMatch(SPClient pNewClient)
   auto clientIter = m_Clients.find(pNewClient->m_Username);
   if (clientIter != m_Clients.end()) // Username has a match
   {
-    if (clientIter->second->m_DeviceId != pNewClient->m_DeviceId)
+    if ((clientIter->second->m_DeviceId != pNewClient->m_DeviceId) &&
+        (clientIter->second->m_ConnectDeviceId == pNewClient->m_DeviceId) &&
+        (clientIter->second->m_DeviceId == pNewClient->m_ConnectDeviceId))
     {
       // Device is not the same. Return client and remove from list
       pOldClient = clientIter->second;
