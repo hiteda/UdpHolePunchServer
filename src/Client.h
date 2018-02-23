@@ -25,6 +25,7 @@ namespace UdpPuncher
     , m_EndPoint(endPoint)
     , m_CreatedTime(time(nullptr))
     {
+      m_Data.append(":&:");
       m_Data.append(endPoint.m_Address);
       m_Data.append(":&:");
       m_Data.append(std::to_string(endPoint.m_Port));
