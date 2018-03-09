@@ -71,6 +71,8 @@ bool Server::Run()
           cout << "Match!" << endl;
           SendClientMessages(pClient, pClientMatch);
         }
+        else
+          cout << "Client timed out and deleted." << endl;
         m_pClientMap->PrintClients();
       }
       else

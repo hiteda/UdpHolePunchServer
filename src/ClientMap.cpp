@@ -6,6 +6,7 @@
 #include "ClientMap.h"
 #include "Client.h"
 #include <iostream>
+#include <ctime>
 
 using namespace UdpPuncher;
 using namespace std;
@@ -24,6 +25,12 @@ SPClient ClientMap::GetMatch(SPClient pNewClient)
   auto clientIter = m_Clients.find(pNewClient->m_Username);
   if (clientIter != m_Clients.end()) // Username has a match
   {
+    time_t now = time(nullptr);
+    if (difftime(now, clientIter->second->m_CreatedTime) > 600)
+    {
+      m_Clients.erase(clientIter->first);
+      return nullptr;
+    }
     if ((clientIter->second->m_DeviceId != pNewClient->m_DeviceId) &&
         (clientIter->second->m_ConnectDeviceId == pNewClient->m_DeviceId) &&
         (clientIter->second->m_DeviceId == pNewClient->m_ConnectDeviceId))
