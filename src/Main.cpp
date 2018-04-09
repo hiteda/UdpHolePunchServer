@@ -13,7 +13,9 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
+  // Default port number for server to listen on
   int portNumber = 55176;
+  // Allow the user to set the server port number from the command line
   if (argc == 2)
     portNumber = atoi(argv[1]);
   

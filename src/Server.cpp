@@ -61,19 +61,23 @@ bool Server::Run()
     string receivedString("");
     if (m_pServerSocket->Receive(receivedString))
     {
+      // Extract client data from the received message
       SPClient pClient = ParseMessage(receivedString);
+      // If a valid client is returned, check if another client
+      // is trying to connect to it
       if (pClient)
       {
         SPClient pClientMatch = m_pClientMap->GetMatch(pClient);
+        // If the clients are trying to connect to each other,
+        // send them each other's data
         if (pClientMatch)
         {
-          // TODO: send their data to each other
           cout << "Match!" << endl;
           SendClientMessages(pClient, pClientMatch);
         }
         else
           cout << "Client timed out and deleted." << endl;
-        m_pClientMap->PrintClients();
+        m_pClientMap->PrintClients(); // Print list of clients (for debugging)
       }
       else
         cout << "No client!" << endl;
@@ -147,6 +151,12 @@ string Server::Tokenize(const std::string& msg, const char* delim, size_t& pos) 
   return token;
 }
 
+/** SendClientMessage
+Sends the data from pClient1 to pClient2, and vice versa
+
+@param pClient1: [in] pointer to a Client object
+@param pClient2: [in] pointer to a Client object
+*/
 void Server::SendClientMessages(const SPClient pClient1, const SPClient pClient2)
 {
   m_pServerSocket->SendClientMessage(pClient1->m_EndPoint, pClient2->m_Data);

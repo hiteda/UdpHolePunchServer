@@ -55,12 +55,22 @@ string ServerSocket::GetErrorString() const
   return errString;
 }
 
+/** CloseSocket
+If the socket is open, closes it
+*/
 void ServerSocket::CloseSocket()
 {
   if (m_SocketFileDesc > -1)
     close(m_SocketFileDesc);
 }
 
+/** Receive
+Listens for a message on the socket, then assigns the
+received data to receivedString
+
+@param receivedString : [out] string to populate with received data
+@return   true if successful, otherwise false
+*/
 bool ServerSocket::Receive(string& receivedString)
 {
   bzero(m_Buffer, s_BUFFER_LENGTH);
@@ -74,6 +84,12 @@ bool ServerSocket::Receive(string& receivedString)
   return true;
 }
 
+/** GetOtherEndpoint
+Translates endpoint data from m_AddrInOther (sockaddr_in)
+to an IpEndpoint and returns the IpEndpoint object
+
+@return  IpEndpoint object with endpoint data from m_AddrInOther
+*/
 IpEndpoint ServerSocket::GetOtherEndpoint() const
 {
   string ipAddress(inet_ntoa(m_AddrInOther.sin_addr));
@@ -81,6 +97,12 @@ IpEndpoint ServerSocket::GetOtherEndpoint() const
   return otherEndpoint;
 }
 
+/** SendClientMessage
+Sends the data in msg to the client given by clientEndpoint
+
+@param clientEndpoint : [in] endpoint data of client to send to
+@param msg            : [in] data to send
+*/
 void ServerSocket::SendClientMessage(const IpEndpoint& clientEndpoint, const string& msg)
 {
   struct sockaddr_in clientAddress;
@@ -96,7 +118,7 @@ void ServerSocket::SendClientMessage(const IpEndpoint& clientEndpoint, const str
 }
 
 /** InitSocket
-Initializes the server socket on the number set
+Initializes and binds the server socket on the number set
 by portNum.
 
 @param  portNum : [in] port number to use

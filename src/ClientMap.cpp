@@ -25,12 +25,16 @@ SPClient ClientMap::GetMatch(SPClient pNewClient)
   auto clientIter = m_Clients.find(pNewClient->m_Username);
   if (clientIter != m_Clients.end()) // Username has a match
   {
+    // If the client was created more than 10 minutes ago, delete it
     time_t now = time(nullptr);
     if (difftime(now, clientIter->second->m_CreatedTime) > 600)
     {
       m_Clients.erase(clientIter->first);
       return nullptr;
     }
+    // The incoming Client's ID must not match the existing Client's ID,
+    // it must be trying to connect to the existing Client, and the existing
+    // Client must be trying to connect to it
     if ((clientIter->second->m_DeviceId != pNewClient->m_DeviceId) &&
         (clientIter->second->m_ConnectDeviceId == pNewClient->m_DeviceId) &&
         (clientIter->second->m_DeviceId == pNewClient->m_ConnectDeviceId))
