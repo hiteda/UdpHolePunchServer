@@ -6,11 +6,11 @@ parser.add_argument("--host", help="Host IP address")
 parser.add_argument("port_number", help="Port number to use", type=int)
 args = parser.parse_args()
 
-UDP_IP = "192.168.1.22"
+UDP_IP = "localhost"
 if args.host is not None:
   UDP_IP = args.host
 UDP_PORT = args.port_number
-message = "me:&:thing1:&:moreStuff"
+message = "user:&:device_name:&:device_to_connect:&:other_data"
 
 print "Sending message!"
 

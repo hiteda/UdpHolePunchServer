@@ -67,6 +67,7 @@ bool Server::Run()
       // is trying to connect to it
       if (pClient)
       {
+        cout << "Received data from " << pClient->m_DeviceId << std::endl;
         SPClient pClientMatch = m_pClientMap->GetMatch(pClient);
         // If the clients are trying to connect to each other,
         // send them each other's data
@@ -75,8 +76,7 @@ bool Server::Run()
           cout << "Match!" << endl;
           SendClientMessages(pClient, pClientMatch);
         }
-        else
-          cout << "Client timed out and deleted." << endl;
+
         m_pClientMap->PrintClients(); // Print list of clients (for debugging)
       }
       else

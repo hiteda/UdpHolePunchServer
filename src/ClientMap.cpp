@@ -30,6 +30,7 @@ SPClient ClientMap::GetMatch(SPClient pNewClient)
     if (difftime(now, clientIter->second->m_CreatedTime) > 600)
     {
       m_Clients.erase(clientIter->first);
+      cout << "Client timed out and deleted" << std::endl;
       return nullptr;
     }
     // The incoming Client's ID must not match the existing Client's ID,
