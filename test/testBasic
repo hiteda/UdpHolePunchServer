@@ -1,0 +1,21 @@
+#!/bin/bash
+#file:    testBasic
+#author:  David Hite
+#created: 5/3/2018
+#description: Tests the basic functionality of the UDP hole punch server
+
+if [ !-e ../server ]
+then
+  echo Server must be built before running test. Please run \'make\' in the previous directory.
+  exit 1
+fi
+
+ps | grep server
+
+if [ $? -eq 1 ]
+then
+  ../server &
+fi
+
+python socketTest.py 55176 device1 device2 &
+python socketTest.py 55176 device2 device1 &
