@@ -8,4 +8,6 @@ Made to run on Linux machines.
 
 Run "make" to build the server
 
-A simple test script is in the python directory. Run "python socketTest.py --host {SERVER_IP} {SERVER_PORT}" to send a datagram to the server. To simulate two clients, you will need to modify the second field in the message (very rudimentary test script).
+The "test" directory contains some basic test scripts. Run testBasic to simulate two clients connecting to the server with no edge cases or 
+error cases. You may need to make testBasic executable by running "sudo chmod +x testBasic". As of May 3, 2018, testBasic can only be run
+from the "test" directory.
