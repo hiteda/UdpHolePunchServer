@@ -4,7 +4,7 @@
 @created:     11/15/2017
 *******************************************************************/
 #include "ServerSocket.h"
-#include "IpEndpoint.h"
+#include "../IpEndpoint.h"
 #include <unistd.h>
 #include <string.h>
 #include <iostream>

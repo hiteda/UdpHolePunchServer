@@ -1,9 +1,11 @@
 ifeq ($(OS),Windows_NT)
 	SOCKETFILE = src/windows/ServerSocket.cpp
 	DELETE=del /f
+	WINFLAGS=-lws2_32
 else
 	SOCKETFILE = src/posix/ServerSocket.cpp
 	DELETE=rm -f
+	WINFLAGS=
 endif
 
 CC=g++
@@ -12,7 +14,7 @@ FLAGS=-std=gnu++0x -Wall
 all: server
 
 server: Main.o Server.o ServerSocket.o ClientMap.o
-	$(CC) Main.o Server.o ServerSocket.o ClientMap.o -lws2_32 -o server
+	$(CC) Main.o Server.o ServerSocket.o ClientMap.o $(WINFLAGS) -o server
 	
 Main.o: src/Main.cpp
 	g++ -c $(FLAGS) src/Main.cpp -o Main.o
