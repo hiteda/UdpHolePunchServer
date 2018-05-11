@@ -8,6 +8,8 @@
 #include <string.h>
 #include <iostream>
 
+#pragma comment(lib, "ws2_32.lib")
+
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
