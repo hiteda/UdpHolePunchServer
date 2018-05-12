@@ -32,4 +32,7 @@ debug: src/Main.cpp src/Server.cpp $(SOCKETFILE)
 	$(CC) -g -std=gnu++0x -Wall src/Main.cpp src/Server.cpp $(SOCKETFILE) src/ClientMap.cpp -o serverDbg
 
 clean:
+	$(DELETE) *.o
+
+clean-all:
 	$(DELETE) server serverDbg *.o *.exe
