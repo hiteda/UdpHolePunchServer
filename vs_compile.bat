@@ -4,12 +4,12 @@ REM Requires Visual Studio 2013 or 2015
 
 SET ERRNO=0
 
-IF EXIST "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\cl" (
-  SET CC="C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\cl"
+IF EXIST "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\cl.exe" (
+  SET CC="C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\cl.exe"
   SET VARS="C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat"
   ECHO Compiling with Visual Studio 2015
-) ELSE IF EXIST "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\cl" (
-  SET CC="C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\cl"
+) ELSE IF EXIST "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\cl.exe" (
+  SET CC="C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\cl.exe"
   SET VARS="C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat"
   ECHO Compiling with Visual Studio 2013
 ) ELSE (

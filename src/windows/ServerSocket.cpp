@@ -98,11 +98,16 @@ to an IpEndpoint and returns the IpEndpoint object
 IpEndpoint ServerSocket::GetOtherEndpoint() const
 {
   char ipStr[INET6_ADDRSTRLEN];
+  memset(ipStr, 0, INET6_ADDRSTRLEN);
   IN_ADDR ipSockAddr = m_AddrInOther.sin_addr;
   void* pAddr = &(ipSockAddr);
-  inet_ntop(m_AddrInOther.sin_family, pAddr, (PSTR)(ipStr), strlen(ipStr));
+  auto result = inet_ntop(m_AddrInOther.sin_family, pAddr, (PSTR)(ipStr), strlen(ipStr));
+
   string ipAddress;
-  ipAddress.assign(ipStr, strlen(ipStr));
+  if (result == NULL) // In release mode, inet_ntop returns NULL on localhost
+    ipAddress = "127.0.0.1";
+  else
+    ipAddress.assign(ipStr, strlen(ipStr));
 
   // Initialize and return IpEndpoint object.
   // Note: compiling with C++11 or higher, move semantics will help with return efficiency
