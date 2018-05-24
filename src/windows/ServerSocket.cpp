@@ -97,10 +97,15 @@ to an IpEndpoint and returns the IpEndpoint object
 */
 IpEndpoint ServerSocket::GetOtherEndpoint() const
 {
-  //char buffer[128];
-  //inet_ntoa(AF_INET, m_AddrInOther.sin_addr, (PSTR)buffer, sizeof(buffer));
-  string ipAddress(inet_ntoa(m_AddrInOther.sin_addr));
-  //ipAddress.assign(buffer, strlen(buffer));
+  char ipStr[INET6_ADDRSTRLEN];
+  IN_ADDR ipSockAddr = m_AddrInOther.sin_addr;
+  void* pAddr = &(ipSockAddr);
+  inet_ntop(m_AddrInOther.sin_family, pAddr, (PSTR)(ipStr), strlen(ipStr));
+  string ipAddress;
+  ipAddress.assign(ipStr, strlen(ipStr));
+
+  // Initialize and return IpEndpoint object.
+  // Note: compiling with C++11 or higher, move semantics will help with return efficiency
   IpEndpoint otherEndpoint(ipAddress, ntohs(m_AddrInOther.sin_port));
   return otherEndpoint;
 }
@@ -119,9 +124,7 @@ void ServerSocket::SendClientMessage(const IpEndpoint& clientEndpoint, const str
   clientAddress.sin_family  = AF_INET;
   clientAddress.sin_port    = htons(clientEndpoint.m_Port);
   std::cout << clientEndpoint.m_Address << ":" << clientEndpoint.m_Port << std::endl;
-  struct hostent* ipAddr = gethostbyname(clientEndpoint.m_Address.c_str());
-  memmove((char*)&clientAddress.sin_addr.s_addr, (char*)ipAddr->h_addr, ipAddr->h_length);
-//  bcopy((char*)ipAddr->h_addr, (char*)&clientAddress.sin_addr.s_addr, ipAddr->h_length);
+  inet_pton(AF_INET, (PCSTR)(clientEndpoint.m_Address.c_str()), &(clientAddress.sin_addr));
   if (sendto(m_Socket, msg.c_str(), msg.length()+1, 0, (struct sockaddr*)(&clientAddress), sizeof(clientAddress)) < 0)
     std::cout << "Oh no! Send failure!" << std::endl;
 }

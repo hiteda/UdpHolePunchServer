@@ -25,9 +25,9 @@ SPClient ClientMap::GetMatch(SPClient pNewClient)
   auto clientIter = m_Clients.find(pNewClient->m_Username);
   if (clientIter != m_Clients.end()) // Username has a match
   {
-    // If the client was created more than 10 minutes ago, delete it
+    // If the client was created more than 10 seconds ago, delete it
     time_t now = time(nullptr);
-    if (difftime(now, clientIter->second->m_CreatedTime) > 600)
+    if (difftime(now, clientIter->second->m_CreatedTime) > 10)
     {
       m_Clients.erase(clientIter->first);
       cout << "Client timed out and deleted" << std::endl;
