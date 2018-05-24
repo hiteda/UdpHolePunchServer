@@ -6,7 +6,8 @@
 #include "ClientMap.h"
 #include "Client.h"
 #include <iostream>
-#include <ctime>
+#include <thread>
+#include <chrono>
 
 using namespace UdpPuncher;
 using namespace std;
@@ -25,30 +26,22 @@ SPClient ClientMap::GetMatch(SPClient pNewClient)
   auto clientIter = m_Clients.find(pNewClient->m_Username);
   if (clientIter != m_Clients.end()) // Username has a match
   {
-    // If the client was created more than 10 seconds ago, delete it
-    time_t now = time(nullptr);
-    if (difftime(now, clientIter->second->m_CreatedTime) > 10)
-    {
-      m_Clients.erase(clientIter->first);
-      cout << "Client timed out and deleted" << std::endl;
-      return nullptr;
-    }
-    // The incoming Client's ID must not match the existing Client's ID,
-    // it must be trying to connect to the existing Client, and the existing
-    // Client must be trying to connect to it
     if ((clientIter->second->m_DeviceId != pNewClient->m_DeviceId) &&
         (clientIter->second->m_ConnectDeviceId == pNewClient->m_DeviceId) &&
         (clientIter->second->m_DeviceId == pNewClient->m_ConnectDeviceId))
     {
       // Device is not the same. Return client and remove from list
       pOldClient = clientIter->second;
-      m_Clients.erase(pNewClient->m_Username);
+      EraseClient(pNewClient->m_Username);
     }
   }
   else // No match, add the new client
   {
     pair<string, SPClient> newClientPair(pNewClient->m_Username, pNewClient);
     m_Clients.insert(newClientPair);
+    // Auto cleanup the client if it times out
+	  thread cleanupThread(&ClientMap::AutoCleanUp, this, pNewClient->m_Username);
+    cleanupThread.detach();
   }
   
   return pOldClient;
@@ -66,4 +59,32 @@ void ClientMap::PrintClients() const
     cout << counter << ". " << client.first << ": " << client.second->m_DeviceId << endl;
     counter++;
   }
+}
+
+/** AutoCleanup
+Pauses the current thread for 10 seconds, then attempts to
+erase the client given by the key.
+
+@param key : [in] Key to client in map
+@return void
+*/
+void ClientMap::AutoCleanUp(const string& key)
+{
+  this_thread::sleep_for(chrono::seconds(10));
+  EraseClient(key);
+}
+
+/** EraseClient
+Attempts to erase a client in a thread-safemanner.
+
+@param key : [in] Key to client in map to erase
+@return void
+*/
+void ClientMap::EraseClient(const string& key)
+{
+  m_MapMutex.lock();
+  auto erasedClients = m_Clients.erase(key);
+  m_MapMutex.unlock();
+  if (erasedClients > 0)
+    cout << key << " erased" << endl;
 }

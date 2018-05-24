@@ -9,6 +9,7 @@
 #include <map>
 #include <string>
 #include <memory>
+#include <mutex>
 
 namespace UdpPuncher
 {
@@ -23,8 +24,12 @@ public:
   
   SPClient  GetMatch(SPClient pNewClient);
   void      PrintClients() const;
-  
+  void      AutoCleanUp(const std::string& key);
+
 private:
   std::map<std::string, SPClient> m_Clients;
+  std::mutex                      m_MapMutex;
+
+  void EraseClient(const std::string& key);
 };
 }

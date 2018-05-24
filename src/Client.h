@@ -7,7 +7,6 @@
 #pragma once
 #include "IpEndpoint.h"
 #include <string>
-#include <ctime>
 
 namespace UdpPuncher
 {
@@ -23,7 +22,6 @@ namespace UdpPuncher
     , m_ConnectDeviceId(connectDeviceId)
     , m_Data(data)
     , m_EndPoint(endPoint)
-    , m_CreatedTime(time(nullptr))
     {
       m_Data.append(":&:");
       m_Data.append(endPoint.m_Address);
@@ -36,6 +34,5 @@ namespace UdpPuncher
     std::string m_ConnectDeviceId;
     std::string m_Data;
     IpEndpoint  m_EndPoint;
-    time_t      m_CreatedTime;
   };
 }

@@ -45,6 +45,7 @@ class SocketTest:
 			sock.close()
 			return True
 		else:
+			print("Return from server timed out")
 			sock.close()
 			return False
 	
