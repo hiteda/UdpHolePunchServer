@@ -82,9 +82,14 @@ Attempts to erase a client in a thread-safemanner.
 */
 void ClientMap::EraseClient(const string& key)
 {
-  m_MapMutex.lock();
-  auto erasedClients = m_Clients.erase(key);
-  m_MapMutex.unlock();
-  if (erasedClients > 0)
-    cout << key << " erased" << endl;
+  string clientDevice;
+  {
+    lock_guard<mutex> lock(m_MapMutex);
+    auto pClient = m_Clients[key];
+    if (pClient)
+      clientDevice = pClient->m_DeviceId;
+    m_Clients.erase(key);
+  }
+  if (!clientDevice.empty())
+    cout << clientDevice << " erased" << endl;
 }
