@@ -23,6 +23,7 @@ that map value and removes the item from the map.
 SPClient ClientMap::GetMatch(SPClient pNewClient)
 {
   SPClient pOldClient = nullptr;
+  lock_guard<mutex> lock(m_MapMutex);
   auto clientIter = m_Clients.find(pNewClient->m_Username);
   if (clientIter != m_Clients.end()) // Username has a match
   {
@@ -50,10 +51,12 @@ SPClient ClientMap::GetMatch(SPClient pNewClient)
 /** PrintClients
 Prints out all of the existing clients (for debugging)
 */
-void ClientMap::PrintClients() const
+void ClientMap::PrintClients()
 {
   int counter = 1;
   cout << endl;
+  
+  lock_guard<mutex> lock(m_MapMutex);
   for (auto client : m_Clients)
   {
     cout << counter << ". " << client.first << ": " << client.second->m_DeviceId << endl;
@@ -71,11 +74,25 @@ erase the client given by the key.
 void ClientMap::AutoCleanUp(const string& key)
 {
   this_thread::sleep_for(chrono::seconds(10));
+  EraseClientSafe(key);
+}
+
+/** EraseClientSafe
+Attempts to erase a client in a thread-safe manner.
+
+@param key : [in] Key to client in map to erase
+@return void
+*/
+void ClientMap::EraseClientSafe(const string& key)
+{
+  lock_guard<mutex> lock(m_MapMutex);
   EraseClient(key);
 }
 
 /** EraseClient
-Attempts to erase a client in a thread-safemanner.
+Attempts to erase a client.
+NOTE: This method should only be used if the caller has
+a lock on m_MapMutex!
 
 @param key : [in] Key to client in map to erase
 @return void
@@ -83,13 +100,10 @@ Attempts to erase a client in a thread-safemanner.
 void ClientMap::EraseClient(const string& key)
 {
   string clientDevice;
-  {
-    lock_guard<mutex> lock(m_MapMutex);
-    auto pClient = m_Clients[key];
-    if (pClient)
-      clientDevice = pClient->m_DeviceId;
-    m_Clients.erase(key);
-  }
+  auto pClient = m_Clients[key];
+  if (pClient)
+    clientDevice = pClient->m_DeviceId;
+  m_Clients.erase(key);
   if (!clientDevice.empty())
     cout << clientDevice << " erased" << endl;
 }

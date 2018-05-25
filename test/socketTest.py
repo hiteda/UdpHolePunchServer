@@ -16,8 +16,9 @@ class SocketTest:
 	UDP_PORT = 55176 # Default server port
 	device_name = "defaultDeviceName"
 	other_device = "defaultOther"
+	verbose = True
 	
-	def __init__(self, ip, port, device, other):
+	def __init__(self, ip, port, device, other, v = True):
 		if ip is not None:
 			self.UDP_IP = ip
 		self.UDP_PORT = port
@@ -26,11 +27,12 @@ class SocketTest:
 			
 		if other is not None:
 			self.other_device = other
+		self.verbose = v
 
 	def SendMessage(self):
 		message = "user:&:" + self.device_name + ":&:" + self.other_device + ":&:other_data"
-
-		print("Sending message!")
+		if self.verbose:
+			print("Sending message!")
 
 		sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 		sock.setblocking(0)
@@ -41,11 +43,13 @@ class SocketTest:
 		ready = select.select([sock], [], [], 10)
 		if ready[0]:
 			data, addr = sock.recvfrom(512)
-			print(self.device_name + " received: " + data.decode('utf-8'))
+			if self.verbose:
+				print(self.device_name + " received: " + data.decode('utf-8'))
 			sock.close()
 			return True
 		else:
-			print("Return from server timed out")
+			if self.verbose:
+				print("Return from server timed out")
 			sock.close()
 			return False
 	

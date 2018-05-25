@@ -23,13 +23,14 @@ public:
   ~ClientMap(){}
   
   SPClient  GetMatch(SPClient pNewClient);
-  void      PrintClients() const;
+  void      PrintClients();
   void      AutoCleanUp(const std::string& key);
 
 private:
   std::map<std::string, SPClient> m_Clients;
   std::mutex                      m_MapMutex;
 
+  void EraseClientSafe(const std::string& key);
   void EraseClient(const std::string& key);
 };
 }
