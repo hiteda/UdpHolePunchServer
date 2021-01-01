@@ -17,7 +17,6 @@
 #include <ws2tcpip.h>
 
 using namespace UdpPuncher;
-using std::string;
 
 ServerSocket::ServerSocket(const int portNum)
 : m_ErrorCode(EErrType::None)
@@ -36,9 +35,9 @@ Returns a string corresponding to the current value
 of m_ErrorCode
 @return string of error message
 */
-string ServerSocket::GetErrorString() const
+std::string ServerSocket::GetErrorString() const
 {
-  string errString("");
+  std::string errString("");
   switch(m_ErrorCode)
   {
     case EErrType::SocketOpen:
@@ -76,7 +75,7 @@ received data to receivedString
 @param receivedString : [out] string to populate with received data
 @return   true if successful, otherwise false
 */
-bool ServerSocket::Receive(string& receivedString)
+bool ServerSocket::Receive(std::string& receivedString)
 {
   memset(m_Buffer, '\0', s_BUFFER_LENGTH);
   
@@ -103,7 +102,7 @@ IpEndpoint ServerSocket::GetOtherEndpoint() const
   void* pAddr = &(ipSockAddr);
   auto result = inet_ntop(m_AddrInOther.sin_family, pAddr, (PSTR)(ipStr), strlen(ipStr));
 
-  string ipAddress;
+  std::string ipAddress;
   if (result == NULL) // In release mode, inet_ntop returns NULL on localhost
     ipAddress = "127.0.0.1";
   else
@@ -121,7 +120,7 @@ Sends the data in msg to the client given by clientEndpoint
 @param clientEndpoint : [in] endpoint data of client to send to
 @param msg            : [in] data to send
 */
-void ServerSocket::SendClientMessage(const IpEndpoint& clientEndpoint, const string& msg)
+void ServerSocket::SendClientMessage(const IpEndpoint& clientEndpoint, const std::string& msg)
 {
   struct sockaddr_in clientAddress;
   memset((char*) &clientAddress, 0, sizeof(clientAddress));

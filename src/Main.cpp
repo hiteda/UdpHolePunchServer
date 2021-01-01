@@ -9,7 +9,6 @@
 #include <signal.h>
 
 using namespace UdpPuncher;
-using namespace std;
 
 int main(int argc, char* argv[])
 {
@@ -22,7 +21,7 @@ int main(int argc, char* argv[])
   Server theServer;
   if (!theServer.SetPortNumber(portNumber))
   {
-    cout << "Invalid port number. Please select a port between 1024 and 65535." << endl;
+    std::cout << "Invalid port number. Please select a port between 1024 and 65535." << std::endl;
     return 1;
   }
   if (!theServer.Run())

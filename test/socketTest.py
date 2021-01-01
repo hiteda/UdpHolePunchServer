@@ -2,8 +2,8 @@
 @file:				socketTest.py
 @author:			David Hite
 @created:			11/17/2017
-@description: Sends a request to the server socket, then listens for 10 seconds
-							for a response
+@description:       Sends a request to the server socket, then listens for 10 seconds
+                    for a response. This is a utility class used by basicTest.py.
 '''
 import argparse
 import socket

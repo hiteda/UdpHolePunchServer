@@ -10,7 +10,6 @@
 #include <chrono>
 
 using namespace UdpPuncher;
-using namespace std;
 
 /** GetMatch
 Checks for a match in the client map. If a matching
@@ -23,7 +22,7 @@ that map value and removes the item from the map.
 SPClient ClientMap::GetMatch(SPClient pNewClient)
 {
   SPClient pOldClient = nullptr;
-  lock_guard<mutex> lock(m_MapMutex);
+  std::lock_guard<std::mutex> lock(m_MapMutex);
   auto clientIter = m_Clients.find(pNewClient->m_Username);
   if (clientIter != m_Clients.end()) // Username has a match
   {
@@ -38,10 +37,10 @@ SPClient ClientMap::GetMatch(SPClient pNewClient)
   }
   else // No match, add the new client
   {
-    pair<string, SPClient> newClientPair(pNewClient->m_Username, pNewClient);
+    std::pair<std::string, SPClient> newClientPair(pNewClient->m_Username, pNewClient);
     m_Clients.insert(newClientPair);
     // Auto cleanup the client if it times out
-	  thread cleanupThread(&ClientMap::AutoCleanUp, this, pNewClient->m_Username);
+    std::thread cleanupThread(&ClientMap::AutoCleanUp, this, pNewClient->m_Username);
     cleanupThread.detach();
   }
   
@@ -54,13 +53,12 @@ Prints out all of the existing clients (for debugging)
 void ClientMap::PrintClients()
 {
   int counter = 1;
-  cout << endl;
+  std::cout << std::endl;
   
-  lock_guard<mutex> lock(m_MapMutex);
+  std::lock_guard<std::mutex> lock(m_MapMutex);
   for (auto client : m_Clients)
   {
-    cout << counter << ". " << client.first << ": " << client.second->m_DeviceId << endl;
-    counter++;
+    std::cout << counter++ << ". " << client.first << ": " << client.second->m_DeviceId << std::endl;
   }
 }
 
@@ -71,9 +69,9 @@ erase the client given by the key.
 @param key : [in] Key to client in map
 @return void
 */
-void ClientMap::AutoCleanUp(const string& key)
+void ClientMap::AutoCleanUp(const std::string& key)
 {
-  this_thread::sleep_for(chrono::seconds(10));
+  std::this_thread::sleep_for(std::chrono::seconds(10));
   EraseClientSafe(key);
 }
 
@@ -83,9 +81,9 @@ Attempts to erase a client in a thread-safe manner.
 @param key : [in] Key to client in map to erase
 @return void
 */
-void ClientMap::EraseClientSafe(const string& key)
+void ClientMap::EraseClientSafe(const std::string& key)
 {
-  lock_guard<mutex> lock(m_MapMutex);
+  std::lock_guard<std::mutex> lock(m_MapMutex);
   EraseClient(key);
 }
 
@@ -97,13 +95,13 @@ a lock on m_MapMutex!
 @param key : [in] Key to client in map to erase
 @return void
 */
-void ClientMap::EraseClient(const string& key)
+void ClientMap::EraseClient(const std::string& key)
 {
-  string clientDevice;
+  std::string clientDevice;
   auto pClient = m_Clients[key];
   if (pClient)
     clientDevice = pClient->m_DeviceId;
   m_Clients.erase(key);
   if (!clientDevice.empty())
-    cout << clientDevice << " erased" << endl;
+    std::cout << clientDevice << " erased" << std::endl;
 }

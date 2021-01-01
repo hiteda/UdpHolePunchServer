@@ -10,10 +10,6 @@
 #include <cstring>
 
 using namespace UdpPuncher;
-using std::string;
-using std::cout;
-using std::endl;
-using std::shared_ptr;
 
 static const char* s_DELIMITER = ":&:";
 
@@ -44,21 +40,21 @@ Starts and runs the server
 */
 bool Server::Run()
 {
-  cout << "Starting server on port " << m_PortNum << "..." << endl;
+  std::cout << "Starting server on port " << m_PortNum << "..." << std::endl;
   
   m_pServerSocket = UPServerSocket(new ServerSocket(m_PortNum));
-  string errString = m_pServerSocket->GetErrorString();
+  std::string errString = m_pServerSocket->GetErrorString();
   if (!errString.empty())
   {
-    cout << errString << endl;
+    std::cout << errString << std::endl;
     return false;
   }
   
-  cout << "Listening on port " << m_PortNum << "..." << endl;
+  std::cout << "Listening on port " << m_PortNum << "..." << std::endl;
   
   while (1)
   {
-    string receivedString("");
+    std::string receivedString("");
     if (m_pServerSocket->Receive(receivedString))
     {
       // Extract client data from the received message
@@ -67,20 +63,20 @@ bool Server::Run()
       // is trying to connect to it
       if (pClient)
       {
-        cout << "Received data from " << pClient->m_DeviceId << std::endl;
+        std::cout << "Received data from " << pClient->m_DeviceId << std::endl;
         SPClient pClientMatch = m_pClientMap->GetMatch(pClient);
         // If the clients are trying to connect to each other,
         // send them each other's data
         if (pClientMatch)
         {
-          cout << "Match!" << endl;
+          std::cout << "Match!" << std::endl;
           SendClientMessages(pClient, pClientMatch);
         }
 
         m_pClientMap->PrintClients(); // Print list of clients (for debugging)
       }
       else
-        cout << "No client!" << endl;
+        std::cout << "No client!" << std::endl;
     }
   }
   
@@ -104,20 +100,20 @@ returns a null pointer.
 @param msg  : [in] string to parse
 @return Shared pointer to a new Client object
 */
-SPClient Server::ParseMessage(const string& msg) const
+SPClient Server::ParseMessage(const std::string& msg) const
 {
   SPClient pClient = nullptr;
   size_t delimPos = 0;
-  string clientId = Tokenize(msg, s_DELIMITER, delimPos);
+  std::string clientId = Tokenize(msg, s_DELIMITER, delimPos);
   if (!clientId.empty())
   {
-    string clientDeviceId = Tokenize(msg, s_DELIMITER, delimPos);
+    std::string clientDeviceId = Tokenize(msg, s_DELIMITER, delimPos);
     if (!clientDeviceId.empty())
     {
-      string connectDeviceId = Tokenize(msg, s_DELIMITER, delimPos);
+      std::string connectDeviceId = Tokenize(msg, s_DELIMITER, delimPos);
       if (!connectDeviceId.empty())
       {
-        string otherData = Tokenize(msg, s_DELIMITER, delimPos);
+        std::string otherData = Tokenize(msg, s_DELIMITER, delimPos);
         if (!otherData.empty()) // make sure there is some other data
         {
           IpEndpoint endPoint = m_pServerSocket->GetOtherEndpoint();
@@ -139,11 +135,11 @@ and delimiter.
 @param pos    : [in/out] position to begin from
 @return The first substring before the given delimeter and after pos
 */
-string Server::Tokenize(const std::string& msg, const char* delim, size_t& pos) const
+std::string Server::Tokenize(const std::string& msg, const char* delim, size_t& pos) const
 {
   size_t newPos = msg.find(delim, pos);
-  string token("");
-  if (newPos != string::npos)
+  std::string token("");
+  if (newPos != std::string::npos)
     token = msg.substr(pos, newPos - pos);
   else
     token = msg.substr(pos);

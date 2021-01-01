@@ -2,7 +2,7 @@
 @file:				basicTest.py
 @author:			David Hite
 @created:			05/22/2018
-@description: Attempts to send and receive messages from two sockets
+@description:       Attempts to send and receive messages from two sockets
 '''
 import time
 import unittest
