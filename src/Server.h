@@ -29,7 +29,7 @@ private:
   std::string             Tokenize(const std::string& msg, const char* delim, size_t& pos) const;
   void                    SendClientMessages(const SPClient pClient1, const SPClient pClient2);
 
-  int             m_PortNum;
+  int             m_PortNum = 0;
   static Server*  m_pInstance;
   UPClientMap     m_pClientMap;
   UPServerSocket  m_pServerSocket;

@@ -2,3 +2,4 @@
 server.exe
 server
 *.o
+_build/*

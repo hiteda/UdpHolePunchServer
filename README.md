@@ -8,7 +8,8 @@ the datagram to connect to each other.
 Run "make" to build the server
 
 ## Compiling on Windows
-If you have Visual Studio 2013 or 2015 installed, run "vs_compile.bat".
+From inside the _build directory, run run_cmake.bat. You may need to modify run_cmake.bat to use your version of Visual Studio.
+Once the script has run, you can open _build/UdpHolePunchServer.sln and compile.
 
 ## Test Directory
 The "test" directory contains some basic test scripts. SocketTest.py contains a module for sending data to the server.
