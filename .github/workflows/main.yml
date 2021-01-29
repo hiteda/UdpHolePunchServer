@@ -30,6 +30,7 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Run basicTest.py
         run: |
-          ./server
+          ./server &
           cd test
           python basicTest.py
+          killall server
